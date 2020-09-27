@@ -1,0 +1,127 @@
+openapi: 3.0.0
+info:
+  title: Time Registration API
+  description: An API for registrating time
+  version: 0.0.1
+
+
+servers:
+  - url: {protocol}://time.{environment}.klokkinn.no
+    description: Production server
+    variables:
+      protocol:
+        enum:
+          - 'https'
+        default: 'https'
+      port:
+        enum:
+          - '443'
+        default: '443'
+      environment:
+        enum:
+          - api
+          - api-staging
+        default: api
+
+  - url: https://time.api-staging.klokkinn.no
+    description: Staging server
+
+
+paths:
+  /entries:
+    get:
+      summary: Returns a list of time entries
+      responses:
+        200:
+          description: A JSON array of time entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+    post:
+      summary: Create a new time Entry
+      responses:
+        201:
+          description: Successfully created a new time Entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+
+  /entries/{entryID}:
+    get:
+      parameters:
+        - name: entryID
+          in: path
+          schema:
+            type: string
+            required: true
+            description: ID of the specific time Entry to return
+      summary: Get detailed information about a single time Entry
+      responses:
+        200:
+          description: A complete version of a time Entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+    patch:
+      parameters:
+        - name: entryID
+          in: path
+          schema:
+            type: string
+            required: true
+            description: ID of the specific time Entry to update
+      summary: Edit an existing time Entry
+      responses:
+        200:
+          description: The resulting updated time Entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+    delete:
+      parameters:
+        - name: entryID
+          in: path
+          schema:
+            type: string
+            required: true
+            description: ID of the specific time Entry to delete
+      summary: Delete an existing time Entry
+      responses:
+        200:
+          description: The deleted time Entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+
+
+components:
+  schemas:
+    Entry:
+      required:
+        - id
+        - date
+        - punch_in
+      properties:
+        id:
+          type: string
+          readOnly: true
+        date:
+          type: string
+        punch_in:
+          type: string
+        punch_out:
+          type: string
+
+
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: This API uses OAuth2 with the Authentication Code Flow
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.klokkinn.no
