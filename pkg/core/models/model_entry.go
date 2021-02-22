@@ -11,9 +11,9 @@ package models
 
 // Entry - The main object which describes a timeframe. The time here uses Unix Nano to define time
 type Entry struct {
-	Id string `json:"id"`
+	Id string `json:"id" db:"id"`
 
-	Start string `json:"start"`
+	Start string `json:"start" db:"start"`
 
-	End string `json:"end,omitempty"`
+	End string `json:"end,omitempty" db:"end"`
 }
