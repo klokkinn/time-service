@@ -1,0 +1,82 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build and deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches:
+    - main
+    paths:
+      - '*/**.go'
+      - Dockerfile
+      - 'go.*'
+
+      # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '1'
+
+      - name: Install dependencies
+        run: |
+          go get -v -t -d ./...
+
+      - name: Run linter
+        run: make lint
+
+      - name: Run tests
+        run: make check
+
+      - name: Run test build
+        run: go build -a -installsuffix cgo -o openapi .
+
+      - name: Login to GitHub Packages Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: docker.pkg.github.com
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Github Tag Bump
+        id: bump_version
+        uses: anothrNick/github-tag-action@18284c78f6ac68868d5341f57c4f971fb5b7605c # 1.34.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          RELEASE_BRANCHES: main
+          WITH_V: true
+
+      - run: echo "image=docker.pkg.github.com/klokkinn/time-service/time-service" >> $GITHUB_ENV
+      - run: echo "version=$(git describe --tags `git rev-list --tags --max-count=1`)" >> $GITHUB_ENV
+
+      - name: Bump version in kustomize chart
+        run: sed -i 's~:${{ env.image }}.*~${{ env.image }}:${{ env.version }}~' kustomize/deployment.yaml
+
+      - name: Build and push Docker images
+        run: docker build --tag ${{ env.image }}:${{ env.version }} .
+
+      - name: Push docker image
+        run: docker push ${{ env.image }}:${{ env.version }}
+
+      - name: Commit Kubernetes chart version bump
+        uses: EndBug/add-and-commit@v4
+        with:
+          author_name: 'Automated Version Bump'
+          author_email: 'action@github.com'
+          add: 'kustomize/deployment.yaml'
+          message: "📦 Bump version to ${{ env.version }}"
+
