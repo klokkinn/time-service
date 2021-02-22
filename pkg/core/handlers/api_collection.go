@@ -12,15 +12,21 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/klokkinn/time-service/pkg/core"
+
 	"github.com/gin-gonic/gin"
 )
 
 // AddEntry - Create a new time Entry
-func AddEntry(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+func AddEntry(_ core.StorageClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{})
+	}
 }
 
 // GetAllEntries - Returns a list of time entries
-func GetAllEntries(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+func GetAllEntries(_ core.StorageClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{})
+	}
 }

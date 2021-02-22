@@ -12,20 +12,28 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/klokkinn/time-service/pkg/core"
+
 	"github.com/gin-gonic/gin"
 )
 
 // DeleteEntry - Delete an existing time Entry
-func DeleteEntry(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+func DeleteEntry(_ core.StorageClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{})
+	}
 }
 
 // GetEntry - Get detailed information about a single time Entry
-func GetEntry(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+func GetEntry(_ core.StorageClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{})
+	}
 }
 
 // UpdateEntry - Edit an existing time Entry
-func UpdateEntry(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{})
+func UpdateEntry(_ core.StorageClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{})
+	}
 }

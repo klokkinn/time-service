@@ -18,6 +18,11 @@ spec:
       - name: time-service
         image: docker.pkg.github.com/klokkinn/time-service/time-service:0.0.1
         env:
-        - name: MY_VARIABLE
-          value: my-value
+        - name: DSN
+          valueFrom:
+            secretKeyRef:
+              name: time-service
+              key: dsn
+        - name: DISCOVERY_URL
+          value: https://auth.klokkinn.no/wellknown
 

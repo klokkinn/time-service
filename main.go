@@ -12,13 +12,21 @@ package main
 import (
 	"log"
 
+	"github.com/klokkinn/time-service/pkg/core"
+
 	"github.com/klokkinn/time-service/pkg/core/router"
 )
 
 func main() {
 	log.Printf("Server started")
 
-	server := router.New()
+	cfg := core.LoadConfig()
+
+	if err := cfg.Validate(); err != nil {
+		log.Fatal(err)
+	}
+
+	server := router.New(cfg)
 
 	log.Fatal(server.Run(":3000"))
 }

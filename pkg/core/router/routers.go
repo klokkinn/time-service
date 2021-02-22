@@ -10,42 +10,46 @@
 package router
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+
+	"github.com/klokkinn/time-service/pkg/core"
+	"github.com/klokkinn/time-service/pkg/storage/upper"
 
 	"github.com/klokkinn/time-service/pkg/core/handlers"
 
 	"github.com/gin-gonic/gin"
 )
 
-// Route is the information for every URI.
-type Route struct {
-	// Name is the name of this Route.
-	Name string
-	// Method is the string for the HTTP method. ex) GET, POST etc..
-	Method string
-	// Pattern is the pattern of the URI.
-	Pattern string
-	// HandlerFunc is the handler function of this route.
-	HandlerFunc gin.HandlerFunc
-}
-
-// Routes is the list of the generated Route.
-type Routes []Route
-
 // New returns a new router.
-func New() *gin.Engine {
+func New(cfg core.Config) *gin.Engine {
 	router := gin.Default()
+
+	var storage core.StorageClient
+
+	switch cfg.DSN.Scheme {
+	case "postgres":
+		storage = upper.NewClient(cfg.DSN)
+	default:
+		log.Fatal(fmt.Sprintf("time-service does not support the database backend %s", cfg.DSN.Scheme))
+	}
+
+	err := storage.Open()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for _, route := range routes {
 		switch route.Method {
 		case http.MethodGet:
-			router.GET(route.Pattern, route.HandlerFunc)
+			router.GET(route.Pattern, route.HandlerFuncGenerator(storage))
 		case http.MethodPost:
-			router.POST(route.Pattern, route.HandlerFunc)
+			router.POST(route.Pattern, route.HandlerFuncGenerator(storage))
 		case http.MethodPut:
-			router.PUT(route.Pattern, route.HandlerFunc)
+			router.PUT(route.Pattern, route.HandlerFuncGenerator(storage))
 		case http.MethodDelete:
-			router.DELETE(route.Pattern, route.HandlerFunc)
+			router.DELETE(route.Pattern, route.HandlerFuncGenerator(storage))
 		}
 	}
 
@@ -53,50 +57,52 @@ func New() *gin.Engine {
 }
 
 // Index is the index handler.
-func Index(c *gin.Context) {
-	c.String(http.StatusOK, "Hello World!")
+func Index(_ core.StorageClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.String(http.StatusOK, "Hello World!")
+	}
 }
 
-var routes = Routes{
+var routes = core.Routes{
 	{
-		"Index",
-		http.MethodGet,
-		"/api/time/",
-		Index,
+		Name:                 "Index",
+		Method:               http.MethodGet,
+		Pattern:              "/api/time/",
+		HandlerFuncGenerator: Index,
 	},
 
 	{
-		"AddEntry",
-		http.MethodPost,
-		"/api/time/entries",
-		handlers.AddEntry,
+		Name:                 "AddEntry",
+		Method:               http.MethodPost,
+		Pattern:              "/api/time/entries",
+		HandlerFuncGenerator: handlers.AddEntry,
 	},
 
 	{
-		"GetAllEntries",
-		http.MethodGet,
-		"/api/time/entries",
-		handlers.GetAllEntries,
+		Name:                 "GetAllEntries",
+		Method:               http.MethodGet,
+		Pattern:              "/api/time/entries",
+		HandlerFuncGenerator: handlers.GetAllEntries,
 	},
 
 	{
-		"DeleteEntry",
-		http.MethodDelete,
-		"/api/time/entries/:id",
-		handlers.DeleteEntry,
+		Name:                 "DeleteEntry",
+		Method:               http.MethodDelete,
+		Pattern:              "/api/time/entries/:id",
+		HandlerFuncGenerator: handlers.DeleteEntry,
 	},
 
 	{
-		"GetEntry",
-		http.MethodGet,
-		"/api/time/entries/:id",
-		handlers.GetEntry,
+		Name:                 "GetEntry",
+		Method:               http.MethodGet,
+		Pattern:              "/api/time/entries/:id",
+		HandlerFuncGenerator: handlers.GetEntry,
 	},
 
 	{
-		"UpdateEntry",
-		http.MethodPatch,
-		"/api/time/entries/:id",
-		handlers.UpdateEntry,
+		Name:                 "UpdateEntry",
+		Method:               http.MethodPatch,
+		Pattern:              "/api/time/entries/:id",
+		HandlerFuncGenerator: handlers.UpdateEntry,
 	},
 }
