@@ -165,9 +165,9 @@ components:
     EntryIDPathParameter:
       name: id
       in: path
+      required: true
       schema:
         type: string
-        required: true
         description: ID of the specific time Entry to return
 
   requestBodies:
