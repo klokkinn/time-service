@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time-service
+  namespace: klokkinn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: time-service
+  template:
+    metadata:
+      labels:
+        app: time-service
+    spec:
+      containers:
+      - name: time-service
+        image: docker.pkg.github.com/klokkinn/time-service/time-service:0.0.1
+        env:
+        - name: MY_VARIABLE
+          value: my-value
+
