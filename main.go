@@ -11,6 +11,9 @@ package main
 
 import (
 	"log"
+	"os"
+
+	"github.com/spf13/afero"
 
 	"github.com/klokkinn/time-service/pkg/core"
 
@@ -20,7 +23,9 @@ import (
 func main() {
 	log.Printf("Server started")
 
-	cfg := core.LoadConfig()
+	fs := &afero.Afero{Fs: afero.NewOsFs()}
+
+	cfg := core.LoadConfig(fs, os.Getenv)
 
 	if err := cfg.Validate(); err != nil {
 		log.Fatal(err)
