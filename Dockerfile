@@ -2,8 +2,10 @@ FROM golang:1.16 AS build
 ENV CGO_ENABLED=0
 WORKDIR /go/src
 
-COPY pkg ./pkg
+COPY go.mod .
+COPY go.sum .
 COPY main.go .
+COPY pkg ./pkg
 
 RUN go get -d -v ./...
 
