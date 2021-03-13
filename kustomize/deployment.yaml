@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: time-service
+      annotations: {}
     spec:
       containers:
       - name: time-service
