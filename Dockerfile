@@ -16,5 +16,5 @@ ENV GIN_MODE=release
 EXPOSE 3000/tcp
 ENTRYPOINT ["./openapi"]
 
-COPY --from=build /pkg/core/src/openapi ./
+COPY --from=build /go/src/openapi ./
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
