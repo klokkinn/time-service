@@ -16,13 +16,8 @@ spec:
     spec:
       containers:
       - name: time-service
-        image: docker.pkg.github.com/klokkinn/time-service/time-service:0.0.1
+        image: ghcr.io/klokkinn/time-service:0.0.1
         env:
-        - name: DSN
-          valueFrom:
-            secretKeyRef:
-              name: time-service
-              key: dsn
         - name: DISCOVERY_URL
-          value: https://auth.klokkinn.no/wellknown
+          value: https://deifyed.eu.auth0.com/.well-known/openid-configuration
 

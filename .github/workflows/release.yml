@@ -60,7 +60,7 @@ jobs:
           RELEASE_BRANCHES: main
           WITH_V: true
 
-      - run: echo "image=docker.pkg.github.com/klokkinn/time-service/time-service" >> $GITHUB_ENV
+      - run: echo "image=ghcr.io/klokkinn/time-service" >> $GITHUB_ENV
       - run: echo "version=$(git describe --tags `git rev-list --tags --max-count=1`)" >> $GITHUB_ENV
 
       - name: Bump version in kustomize chart
