@@ -139,8 +139,8 @@ func (c *client) setup() error {
 
 	_, err := sql.Exec(fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s (
 		id text primary key,
-		start text not null,
-		end text
+		startmillis text not null,
+		endmillis text
 	)`, entryTable))
 	if err != nil {
 		return fmt.Errorf("creating tables: %w", err)

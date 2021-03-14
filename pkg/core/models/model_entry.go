@@ -13,7 +13,7 @@ package models
 type Entry struct {
 	Id string `json:"id" db:"id"`
 
-	Start string `json:"start" db:"start"`
+	Start string `json:"start" db:"startmillis"`
 
-	End string `json:"end,omitempty" db:"end"`
+	End string `json:"end,omitempty" db:"endmillis"`
 }
