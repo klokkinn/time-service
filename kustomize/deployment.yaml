@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: time-service
-        image: ghcr.io/klokkinn/time-service:v0.0.5
+        image: ghcr.io/klokkinn/time-service:v0.0.6
         env:
         - name: DISCOVERY_URL
           value: https://deifyed.eu.auth0.com/.well-known/openid-configuration
