@@ -38,10 +38,10 @@ type StorageClient interface {
 	Open() (err error)
 	Close() (err error)
 
-	Add(goal models.Entry) (err error)
+	Add(entry models.Entry) (err error)
 	Get(id string) (result models.Entry, err error)
 	GetAll(filter StorageFilter) (result []models.Entry, err error)
-	Update(goal models.Entry) (updatedGoal models.Entry, err error)
+	Update(entry models.Entry) (updatedGoal models.Entry, err error)
 	Delete(id string) (err error)
 }
 
