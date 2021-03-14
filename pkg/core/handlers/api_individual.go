@@ -10,6 +10,7 @@
 package handlers
 
 import (
+	"github.com/klokkinn/time-service/pkg/core/models"
 	"net/http"
 
 	"github.com/klokkinn/time-service/pkg/core"
@@ -18,22 +19,88 @@ import (
 )
 
 // DeleteEntry - Delete an existing time Entry
-func DeleteEntry(_ core.StorageClient) gin.HandlerFunc {
+func DeleteEntry(storage core.StorageClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
+		var (
+			err error
+			id  string
+		)
+
+		id = c.Param("id")
+		if id == "" {
+			c.Status(http.StatusBadRequest)
+
+			return
+		}
+
+		err = storage.Delete(id)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+
+			return
+		}
+
+		c.Status(http.StatusNoContent)
 	}
 }
 
 // GetEntry - Get detailed information about a single time Entry
-func GetEntry(_ core.StorageClient) gin.HandlerFunc {
+func GetEntry(storage core.StorageClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
+		var (
+			err   error
+			id    string
+			entry models.Entry
+		)
+
+		id = c.Param("id")
+		if id == "" {
+			c.Status(http.StatusBadRequest)
+
+			return
+		}
+
+		entry, err = storage.Get(id)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+
+			return
+		}
+
+		c.JSON(http.StatusOK, entry)
 	}
 }
 
 // UpdateEntry - Edit an existing time Entry
-func UpdateEntry(_ core.StorageClient) gin.HandlerFunc {
+func UpdateEntry(storage core.StorageClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
+		var (
+			err   error
+			id    string
+			entry models.Entry
+		)
+
+		id = c.Param("id")
+		if id == "" {
+			c.Status(http.StatusBadRequest)
+
+			return
+		}
+
+		err = c.Bind(&entry)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+
+			return
+		}
+
+		entry, err = storage.Update(entry)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+
+			return
+		}
+
+		c.JSON(http.StatusOK, entry)
 	}
 }

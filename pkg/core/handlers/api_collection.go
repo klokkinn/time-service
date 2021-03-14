@@ -10,6 +10,8 @@
 package handlers
 
 import (
+	"github.com/google/uuid"
+	"github.com/klokkinn/time-service/pkg/core/models"
 	"net/http"
 
 	"github.com/klokkinn/time-service/pkg/core"
@@ -18,15 +20,46 @@ import (
 )
 
 // AddEntry - Create a new time Entry
-func AddEntry(_ core.StorageClient) gin.HandlerFunc {
+func AddEntry(storage core.StorageClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
+		var (
+			err   error
+			entry models.Entry
+		)
+
+		err = c.Bind(&entry)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+
+			return
+		}
+
+		entry.Id = uuid.New().String()
+
+		err = storage.Add(entry)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+		}
+
+		c.JSON(http.StatusCreated, entry)
 	}
 }
 
 // GetAllEntries - Returns a list of time entries
-func GetAllEntries(_ core.StorageClient) gin.HandlerFunc {
+func GetAllEntries(storage core.StorageClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
+		var (
+			err     error
+			entries []models.Entry
+		)
+
+		entries, err = storage.GetAll(core.StorageFilter{})
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+
+			return
+		}
+
+		c.JSON(http.StatusOK, entries)
 	}
 }
