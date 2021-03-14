@@ -67,42 +67,42 @@ var routes = core.Routes{
 	{
 		Name:                 "Index",
 		Method:               http.MethodGet,
-		Pattern:              "/api/time/",
+		Pattern:              "/",
 		HandlerFuncGenerator: Index,
 	},
 
 	{
 		Name:                 "AddEntry",
 		Method:               http.MethodPost,
-		Pattern:              "/api/time/entries",
+		Pattern:              "/entries",
 		HandlerFuncGenerator: handlers.AddEntry,
 	},
 
 	{
 		Name:                 "GetAllEntries",
 		Method:               http.MethodGet,
-		Pattern:              "/api/time/entries",
+		Pattern:              "/entries",
 		HandlerFuncGenerator: handlers.GetAllEntries,
 	},
 
 	{
 		Name:                 "DeleteEntry",
 		Method:               http.MethodDelete,
-		Pattern:              "/api/time/entries/:id",
+		Pattern:              "/entries/:id",
 		HandlerFuncGenerator: handlers.DeleteEntry,
 	},
 
 	{
 		Name:                 "GetEntry",
 		Method:               http.MethodGet,
-		Pattern:              "/api/time/entries/:id",
+		Pattern:              "/entries/:id",
 		HandlerFuncGenerator: handlers.GetEntry,
 	},
 
 	{
 		Name:                 "UpdateEntry",
 		Method:               http.MethodPatch,
-		Pattern:              "/api/time/entries/:id",
+		Pattern:              "/entries/:id",
 		HandlerFuncGenerator: handlers.UpdateEntry,
 	},
 }
