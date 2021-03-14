@@ -11,8 +11,10 @@ package router
 
 import (
 	"fmt"
+	"github.com/oslokommune/go-oidc-middleware/pkg/v1/middleware"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/klokkinn/time-service/pkg/core"
 	"github.com/klokkinn/time-service/pkg/storage/upper"
@@ -39,6 +41,12 @@ func New(cfg core.Config) *gin.Engine {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	router.Use(middleware.NewGinAuthenticationMiddleware(middleware.NewJWTValidationMiddlewareOptions{
+		Out:          os.Stdout,
+		LogLevel:     cfg.LogLevel,
+		DiscoveryURL: cfg.DiscoveryURL,
+	}))
 
 	for _, route := range routes {
 		switch route.Method {
