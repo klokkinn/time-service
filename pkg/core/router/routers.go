@@ -48,6 +48,8 @@ func New(cfg core.Config) *gin.Engine {
 			router.POST(route.Pattern, route.HandlerFuncGenerator(storage))
 		case http.MethodPut:
 			router.PUT(route.Pattern, route.HandlerFuncGenerator(storage))
+		case http.MethodPatch:
+			router.PATCH(route.Pattern, route.HandlerFuncGenerator(storage))
 		case http.MethodDelete:
 			router.DELETE(route.Pattern, route.HandlerFuncGenerator(storage))
 		}
