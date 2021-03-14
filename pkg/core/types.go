@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"net/http"
 	"net/url"
 
 	"github.com/klokkinn/time-service/pkg/core/models"
@@ -26,9 +27,15 @@ type Config struct {
 /*
  * Storage
  */
-var (
-	StorageErrorNotFound = errors.New("not found")
-)
+type StorageError struct {
+	err        error
+	statusCode int
+}
+
+var StorageErrorNotFound = &StorageError{
+	err:        errors.New("not found"),
+	statusCode: http.StatusNotFound,
+}
 
 type StorageFilter struct {
 	Author *string

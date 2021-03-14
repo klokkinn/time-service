@@ -10,9 +10,11 @@
 package handlers
 
 import (
+	"errors"
+	"net/http"
+
 	"github.com/google/uuid"
 	"github.com/klokkinn/time-service/pkg/core/models"
-	"net/http"
 
 	"github.com/klokkinn/time-service/pkg/core"
 
@@ -38,7 +40,15 @@ func AddEntry(storage core.StorageClient) gin.HandlerFunc {
 
 		err = storage.Add(entry)
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
+			var storageError *core.StorageError
+
+			if errors.As(err, &storageError) {
+				c.Status(storageError.StatusCode())
+			} else {
+				c.Status(http.StatusInternalServerError)
+			}
+
+			return
 		}
 
 		c.JSON(http.StatusCreated, entry)
@@ -55,7 +65,13 @@ func GetAllEntries(storage core.StorageClient) gin.HandlerFunc {
 
 		entries, err = storage.GetAll(core.StorageFilter{})
 		if err != nil {
-			c.Status(http.StatusInternalServerError)
+			var storageError *core.StorageError
+
+			if errors.As(err, &storageError) {
+				c.Status(storageError.StatusCode())
+			} else {
+				c.Status(http.StatusInternalServerError)
+			}
 
 			return
 		}
