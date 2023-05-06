@@ -80,14 +80,14 @@ func createEntry(t *testing.T, env *servicetesting.Environment, entry models.Ent
 	return createdEntry.Id
 }
 
-//func createEntries(t *testing.T, env *servicetesting.Environment, entries []models.Entry) (ids []string) {
-//	ids = make([]string, len(entries))
+// func createEntries(t *testing.T, env *servicetesting.Environment, entries []models.Entry) (ids []string) {
+// 	ids = make([]string, len(entries))
 //
-//	for index, entry := range entries {
-//		id := createEntry(t, env, entry)
+// 	for index, entry := range entries {
+// 		id := createEntry(t, env, entry)
 //
-//		ids[index] = id
-//	}
+// 		ids[index] = id
+// 	}
 //
-//	return ids
-//}
+// 	return ids
+// }

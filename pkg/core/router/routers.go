@@ -10,11 +10,11 @@
 package router
 
 import (
-	"fmt"
-	"github.com/oslokommune/go-oidc-middleware/pkg/v1/middleware"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/oslokommune/go-oidc-middleware/pkg/v1/middleware"
 
 	"github.com/klokkinn/time-service/pkg/core"
 	"github.com/klokkinn/time-service/pkg/storage/upper"
@@ -34,7 +34,7 @@ func New(cfg core.Config) *gin.Engine {
 	case "postgres":
 		storage = upper.NewClient(cfg.DSN)
 	default:
-		log.Fatal(fmt.Sprintf("time-service does not support the database backend %s", cfg.DSN.Scheme))
+		log.Fatalf("time-service does not support the database backend %s", cfg.DSN.Scheme)
 	}
 
 	err := storage.Open()
