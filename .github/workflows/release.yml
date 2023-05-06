@@ -80,4 +80,3 @@ jobs:
           author_email: 'action@github.com'
           add: 'kustomize/deployment.yaml'
           message: "📦 Bump version to ${{ env.version }}"
-

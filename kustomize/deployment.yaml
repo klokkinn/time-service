@@ -21,4 +21,3 @@ spec:
         env:
         - name: DISCOVERY_URL
           value: https://deifyed.eu.auth0.com/.well-known/openid-configuration
-

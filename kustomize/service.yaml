@@ -10,4 +10,3 @@ spec:
   selector:
     app: time-service
   type: ClusterIP
-
